@@ -3,7 +3,6 @@ import pprint
 import matplotlib.pyplot as plt
 
 pd.set_option('display.max_rows', None)
-pr = pprint.PrettyPrinter()
 
 data = pd.read_csv('data_fake.csv', encoding='cp1251', sep=';', decimal=',')
 
@@ -21,7 +20,7 @@ data.columns = dictionary.keys()
 # Рейтинг
 data['F'] = data['F'].apply(lambda value: float(str(value).replace(',', '.')))
 
-# Дата (из string в Date)
+# Дата создания
 data['Date_dt'] = pd.to_datetime(data['Q'], format="%d.%m.%Y %H:%M")
 df = data['Date_dt'].dt.strftime('%d/%m/%y %H:%M').str.split(" ", expand=True)
 df.columns = ['Date_str', "Hour"]
@@ -29,14 +28,7 @@ data = pd.concat([data, df], axis=1)
 data['Date'] = pd.to_datetime(data['Date_str'], format="%d/%m/%y")
 
 df = data.groupby(['Date', 'H'])[['B', 'F']].agg({'B': 'count', 'F': ['min', 'mean', 'max']})
-print('--------Группировка---------------')
-print(df)
-print(df.index.get_level_values(1))
-
-# Подготовка данных для графика
 pt = data.pivot_table(index='Date', columns='H', values='B', aggfunc='count')
-print('--------pivot---------------------')
-print(pt)
 
 # График 1
 fig = plt.figure(figsize=(8, 4))
