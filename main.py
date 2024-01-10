@@ -1,10 +1,6 @@
 import pandas as pd
 import pprint
 
-def edit(x):
-    return float(str(x).replace(',', '.'))
-
-
 pr = pprint.PrettyPrinter()
 
 data = pd.read_csv('data_fake.csv', encoding='cp1251', sep=';', decimal=',')
@@ -20,7 +16,7 @@ data = data.drop(ind, axis=1)
 dictionary = {chr(ord('A') + i): data.columns[i] for i in range(data.shape[1])}
 data.columns = dictionary.keys()
 
-data['F'] = data['F'].apply(edit)
+data['F'] = data['F'].apply(lambda x: float(str(x).replace(',', '.')))
 print(data['F'])
 pr.pprint(dictionary)
 print(data.info())
