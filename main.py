@@ -1,6 +1,6 @@
 import pandas as pd
 import pprint
-import datetime as dt
+import matplotlib.pyplot as plt
 
 pd.set_option('display.max_rows', None)
 pr = pprint.PrettyPrinter()
@@ -19,7 +19,7 @@ dictionary = {chr(ord('A') + i): data.columns[i] for i in range(data.shape[1])}
 data.columns = dictionary.keys()
 
 # Рейтинг
-data['F'] = data['F'].apply(lambda x: float(str(x).replace(',', '.')))
+data['F'] = data['F'].apply(lambda value: float(str(value).replace(',', '.')))
 
 # Дата (из string в Date)
 data['Date_dt'] = pd.to_datetime(data['Q'], format="%d.%m.%Y %H:%M")
@@ -37,16 +37,20 @@ print(df.index.get_level_values(1))
 pt = data.pivot_table(index='Date', columns='H', values='B', aggfunc='count')
 print('--------pivot---------------------')
 print(pt)
-'''
-H           заочная  очная  очно-заочная  экстернат
-Date                                               
-2019-01-09      2.0    NaN           NaN        NaN
-2019-01-10      3.0    NaN           NaN        NaN
-'''
 
-# Найдем все личные дела по дате (пример)
-print('----------------------------------')
-print(data[data['Date_str'] == '26/06/19'])
+# График 1
+fig = plt.figure(figsize=(8, 4))
+x = df.index.get_level_values(0)
+y = df['B']
+plt.plot(x, y, "c4--")
+plt.xticks(rotation=90)
+plt.suptitle('Приемная компания 2019', color='#ff0000', font='Times New Roman')
+plt.title('Ход подачи заявлений')
 
-pr.pprint(dictionary)
-print(data.info())
+# График 2
+fig2 = plt.figure()
+x = pt.index
+y1 = pt['очная'].cumsum()
+y2 = pt['заочная'].cumsum()
+y3 = pt['очно-заочная'].cumsum()
+plt.stackplot(x, y1, y2, y3)
