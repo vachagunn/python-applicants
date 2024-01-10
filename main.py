@@ -28,18 +28,20 @@ df.columns = ['Date_str', "Hour"]
 data = pd.concat([data, df], axis=1)
 data['Date'] = pd.to_datetime(data['Date_str'], format="%d/%m/%y")
 
-df = data.groupby(['Date'])[['B', 'F']].agg({'B': 'count', 'F': ['min', 'mean', 'max']})
+df = data.groupby(['Date', 'H'])[['B', 'F']].agg({'B': 'count', 'F': ['min', 'mean', 'max']})
 print('--------Группировка---------------')
 print(df)
-print(df.index, type(df.index))
+print(df.index.get_level_values(1))
+
+# Подготовка данных для графика
+pt = data.pivot_table(index='Date', columns='H', values='B', aggfunc='count')
+print('--------pivot---------------------')
+print(pt)
 '''
--->
-               B      F                   
-           count    min       mean     max
-Date                                      
-2019-01-09     2  73.00  78.770000   84.54
-2019-01-10     3  72.30  77.433333   85.00
-2019-01-11     2  60.10  63.145000   66.19
+H           заочная  очная  очно-заочная  экстернат
+Date                                               
+2019-01-09      2.0    NaN           NaN        NaN
+2019-01-10      3.0    NaN           NaN        NaN
 '''
 
 # Найдем все личные дела по дате (пример)
