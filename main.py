@@ -28,14 +28,14 @@ print("Столбец даты:\n", data['Date_dt'])
 print("DateFrame:\n", df)
 
 df.columns = ['Date_str', "Hour"]
-
 data = pd.concat([data, df], axis=1)
-'''
---->
-17  Date_dt   12352 non-null  datetime64[ns]
-18  Date_str  12352 non-null  object        
-19  Hour      12352 non-null  object    
-'''
+data['Date'] = pd.to_datetime(data['Date_str'], format="%d/%m/%y")
+
+# Пересчитать кол-во личный дел и сгруппировать датафрейм по дате
+df = data.groupby(['Date'])['B'].count()
+print('--------Группировка---------------')
+print(df)
+print(df.index, type(df.index))
 
 # Найдем все личные дела по дате (пример)
 print('----------------------------------')
