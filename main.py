@@ -1,5 +1,4 @@
 import pandas as pd
-import pprint
 import matplotlib.pyplot as plt
 
 pd.set_option('display.max_rows', None)
